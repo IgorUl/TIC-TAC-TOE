@@ -22,7 +22,7 @@ public class Field {
     public boolean isFull(char[][] arrCh) {
         for (int i = 0; i < 3; i++)
             for (int j = 0; j < 3; j++)
-                if (arrCh[i][j] == '_') {
+                if (arrCh[i][j] == ' ') {
                     return false;
                 }
         return true;
@@ -41,13 +41,29 @@ public class Field {
     }
 
     public void initField() {
-        System.out.print("Enter cells: ");
-        String str = sc.nextLine();
-        int k = 0;
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                this.field[i][j] = str.charAt(k++);
+                this.field[i][j] = ' ';
             }
+        }
+    }
+
+    public void checkWin() {
+        if (checkLine(this.field, 'X') && checkLine(this.field, 'O')) {
+            System.out.println("Impossible");
+            System.exit(0);
+        } else if (checkLine(this.field, 'X')) {
+            System.out.println("X wins");
+            System.exit(0);
+        } else if (checkLine(this.field, 'O')) {
+            System.out.println("O wins");
+            System.exit(0);
+        } else if (Math.abs(countChar(this.field, 'X') - countChar(this.field, 'O')) > 1) {
+            System.out.println("Impossible");
+            System.exit(0);
+        } else if (isFull(this.field)) {
+            System.out.println("Draw");
+            System.exit(0);
         }
     }
 
@@ -63,9 +79,27 @@ public class Field {
         System.out.println("---------");
     }
 
+    public void game() {
+        char curTurn = 'X';
+        while (true) {
+            switch (curTurn) {
+                case 'X':
+                    checkUserInput('X');
+                    showField();
+                    checkWin();
+                    curTurn = 'O';
+                    break;
+                case 'O':
+                    checkUserInput('O');
+                    showField();
+                    checkWin();
+                    curTurn = 'X';
+                    break;
+            }
+        }
+    }
 
-
-    public void checkUserInput() {
+    public void checkUserInput(char ch) {
         boolean check = false;
         while (!check) {
             System.out.print("Enter the coordinates: ");
@@ -76,11 +110,11 @@ public class Field {
                     System.out.println("Coordinates should be from 1 to 3!");
                     continue;
                 }
-                if (this.field[3 - column][row - 1] != '_') {
+                if (this.field[3 - column][row - 1] != ' ') {
                     System.out.println("This cell is occupied! Choose another one!");
                     continue;
                 }
-                this.field[3 - column][row - 1] = 'X';
+                this.field[3 - column][row - 1] = ch;
                 check = true;
             } catch (InputMismatchException | NumberFormatException e) {
                 sc.nextLine();
