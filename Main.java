@@ -8,8 +8,5 @@ public class Main {
         field.initField();
         field.showField();
         field.game();
-
-
     }
-
 }
